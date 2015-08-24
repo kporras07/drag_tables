@@ -1,0 +1,120 @@
+<?php
+
+/**
+ * @file
+ * Main file for drag_tables module
+ */
+
+/**
+ * Implements hook_element_info().
+ */
+function drag_tables_element_info() {
+  return array(
+    'drag_tables' => array(
+      '#input' => TRUE,
+      '#tree' => TRUE,
+      '#process' => array('drag_tables_process'),
+      //'#after_build' => array('drag_tables_after_build'),
+      //'#validate' => array('drag_tables_validate'),
+      '#element_validate' => array('drag_tables_element_validate'),
+      //'#pre_render' => array('drag_tables_pre_render'),
+      //'#post_render' => array('drag_tables_post_render'),
+      //'#submit' => array('drag_tables_submit'),
+      '#theme' => array('drag_tables'),
+      '#theme_wrappers' => array('form_element'),
+    ),
+  );
+}
+
+/**
+ * Process callback for drag_tables element.
+ */
+function drag_tables_process($element, $form_state) {
+  if (isset($element['#id']) && isset($element['#type'])) {
+    $settings = array('id' => $element['#id'] . '-' . str_replace('_', '-', $element['#type']));
+  }
+  else {
+    $settings = array();
+  }
+  $options = !empty($element['#options']) ? $element['#options'] : array();
+  $allowed = !empty($element['#default_value']) ? array_diff($options, $element['#default_value'][$element['#type']]['selected']) : $options;
+  $selected = !empty($element['#default_value']) ? $element['#default_value'][$element['#type']]['selected'] : array();
+
+  $element['drag_tables'] = array(
+    '#type' => 'fieldset',
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    '#tree' => TRUE,
+    '#attached' => array(
+      'js' => array(
+        0 => array(
+          'data' => array('dragTables' => $settings),
+          'type' => 'setting',
+        ),
+      ),
+    ),
+  );
+  $element['drag_tables']['allowed'] = array(
+    '#title' => t('Allowed'),
+    '#type' => 'select',
+    '#options' => $allowed,
+    '#multiple' => TRUE,
+    '#default_value' => array(),
+    '#weight' => 0,
+  );
+
+  $element['drag_tables']['actions'] = array(
+    '#type' => 'actions',
+    '#weight' => 1,
+  );
+
+  $element['drag_tables']['actions']['to_selected'] = array(
+    '#type' => 'markup',
+    '#markup' => '<a class="button move-to-selected">' . t('To Selected') . '</a>',
+    '#weight' => 2,
+  );
+
+  $element['drag_tables']['actions']['from_selected'] = array(
+    '#type' => 'markup',
+    '#markup' => '<a class="button move-from-selected">' . t('To Allowed') . '</a>',
+    '#weight' => 3,
+  );
+
+  $element['drag_tables']['selected'] = array(
+    '#title' => t('Selected'),
+    '#type' => 'select',
+    '#options' => $options,
+    '#multiple' => TRUE,
+    '#default_value' => $selected,
+    '#weight' => 4,
+  );
+
+  $element['drag_tables']['value'] = array(
+    '#type' => 'hidden',
+    '#value' => drupal_json_encode($selected),
+    '#attributes' => array('id' => 'drag-tables-value'),
+  );
+
+  $element['#value'] = array_keys($options);
+
+  return $element;
+}
+
+/**
+ * Element validate function for drag_tables.
+ */
+function drag_tables_element_validate($element, &$form_state) {
+  $value = filter_xss($form_state['input'][$element['#name']][$element['#type']]['value']);
+  $elements = drupal_json_decode($value);
+  if (drag_tables_validate_selected_elements($elements, $element)) {
+    $values = &$form_state['values'];
+    $values[$element['#name']][$element['#type']]['selected'] = $elements;
+  }
+}
+
+/**
+ * Validate if all selected social networks are valid.
+ */
+function drag_tables_validate_selected_elements($elements, $element) {
+  return empty(array_diff(array_keys($elements), array_keys($element['#options'])));
+}
