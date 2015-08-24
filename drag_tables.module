@@ -78,13 +78,13 @@ function drag_tables_process($element, $form_state) {
 
   $element['drag_tables']['actions']['to_selected'] = array(
     '#type' => 'markup',
-    '#markup' => '<a class="button move-to-selected">' . t('To Selected') . '</a>',
+    '#markup' => '<a class="button move-to-selected">' . t('Add to Selected') . '</a>',
     '#weight' => 2,
   );
 
   $element['drag_tables']['actions']['from_selected'] = array(
     '#type' => 'markup',
-    '#markup' => '<a class="button move-from-selected">' . t('To Allowed') . '</a>',
+    '#markup' => '<a class="button move-from-selected">' . t('Remove from Selected') . '</a>',
     '#weight' => 3,
   );
 
