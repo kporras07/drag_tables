@@ -37,7 +37,7 @@
           updateValue();
         });
         function updateValue() {
-          var active = jQuery(destination).children('option:not(.element-hidden)');
+          var active = jQuery('#' + id + '-selected').children('option:not(.element-hidden)');
           var values = {};
           active.each(function() {
             values[jQuery(this).val()] = jQuery(this).val();
