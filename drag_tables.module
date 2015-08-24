@@ -14,12 +14,7 @@ function drag_tables_element_info() {
       '#input' => TRUE,
       '#tree' => TRUE,
       '#process' => array('drag_tables_process'),
-      //'#after_build' => array('drag_tables_after_build'),
-      //'#validate' => array('drag_tables_validate'),
       '#element_validate' => array('drag_tables_element_validate'),
-      //'#pre_render' => array('drag_tables_pre_render'),
-      //'#post_render' => array('drag_tables_post_render'),
-      //'#submit' => array('drag_tables_submit'),
       '#theme' => array('drag_tables'),
       '#theme_wrappers' => array('form_element'),
     ),
@@ -40,6 +35,8 @@ function drag_tables_process($element, $form_state) {
   $allowed = !empty($element['#default_value']) ? array_diff($options, $element['#default_value'][$element['#type']]['selected']) : $options;
   $selected = !empty($element['#default_value']) ? $element['#default_value'][$element['#type']]['selected'] : array();
 
+  $path = drupal_get_path('module', 'drag_tables');
+
   $element['drag_tables'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
@@ -51,7 +48,18 @@ function drag_tables_process($element, $form_state) {
           'data' => array('dragTables' => $settings),
           'type' => 'setting',
         ),
+        $path . '/drag_tables.js' => array(
+          'type' => 'file',
+        ),
       ),
+      'css' => array(
+        $path . '/drag_tables.css' => array(
+          'type' => 'file',
+        ),
+      ),
+    ),
+    '#attributes' => array(
+      'class' => array('picker-select-elements'),
     ),
   );
   $element['drag_tables']['allowed'] = array(

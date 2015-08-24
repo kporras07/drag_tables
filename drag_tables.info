@@ -1,5 +1,3 @@
 name = Drag Tables
 description = Add a FAPI Element for using 2 draggable tables.
 core = 7.x
-
-scripts[] = drag_tables.js
