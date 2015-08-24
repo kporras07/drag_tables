@@ -2,31 +2,32 @@
 
 /**
  * @file
- * Main file for drag_tables module
+ * Main file for selectboxes module
  */
 
 /**
  * Implements hook_element_info().
  */
-function drag_tables_element_info() {
+function selectboxes_element_info() {
   return array(
-    'drag_tables' => array(
+    'selectboxes' => array(
       '#input' => TRUE,
       '#tree' => TRUE,
-      '#process' => array('drag_tables_process'),
-      '#element_validate' => array('drag_tables_element_validate'),
-      '#theme' => array('drag_tables'),
+      '#process' => array('selectboxes_process'),
+      '#element_validate' => array('selectboxes_element_validate'),
+      '#theme' => array('selectboxes'),
       '#theme_wrappers' => array('form_element'),
     ),
   );
 }
 
 /**
- * Process callback for drag_tables element.
+ * Process callback for selectboxes element.
  */
-function drag_tables_process($element, $form_state) {
+function selectboxes_process($element, $form_state) {
   if (isset($element['#id']) && isset($element['#type'])) {
     $settings = array('id' => $element['#id'] . '-' . str_replace('_', '-', $element['#type']));
+    dpm($element, 'ELEMENT');
   }
   else {
     $settings = array();
@@ -35,9 +36,9 @@ function drag_tables_process($element, $form_state) {
   $allowed = !empty($element['#default_value']) ? array_diff($options, $element['#default_value'][$element['#type']]['selected']) : $options;
   $selected = !empty($element['#default_value']) ? $element['#default_value'][$element['#type']]['selected'] : array();
 
-  $path = drupal_get_path('module', 'drag_tables');
+  $path = drupal_get_path('module', 'selectboxes');
 
-  $element['drag_tables'] = array(
+  $element['selectboxes'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
@@ -45,24 +46,24 @@ function drag_tables_process($element, $form_state) {
     '#attached' => array(
       'js' => array(
         0 => array(
-          'data' => array('dragTables' => $settings),
+          'data' => array('selectBoxes' => $settings),
           'type' => 'setting',
         ),
-        $path . '/drag_tables.js' => array(
+        $path . '/selectboxes.js' => array(
           'type' => 'file',
         ),
       ),
       'css' => array(
-        $path . '/drag_tables.css' => array(
+        $path . '/selectboxes.css' => array(
           'type' => 'file',
         ),
       ),
     ),
     '#attributes' => array(
-      'class' => array('picker-select-elements'),
+      'class' => array('selectboxes-elements'),
     ),
   );
-  $element['drag_tables']['allowed'] = array(
+  $element['selectboxes']['allowed'] = array(
     '#title' => t('Allowed'),
     '#type' => 'select',
     '#options' => $allowed,
@@ -71,24 +72,24 @@ function drag_tables_process($element, $form_state) {
     '#weight' => 0,
   );
 
-  $element['drag_tables']['actions'] = array(
+  $element['selectboxes']['actions'] = array(
     '#type' => 'actions',
     '#weight' => 1,
   );
 
-  $element['drag_tables']['actions']['to_selected'] = array(
+  $element['selectboxes']['actions']['to_selected'] = array(
     '#type' => 'markup',
     '#markup' => '<a class="button move-to-selected">' . t('Add to Selected') . '</a>',
     '#weight' => 2,
   );
 
-  $element['drag_tables']['actions']['from_selected'] = array(
+  $element['selectboxes']['actions']['from_selected'] = array(
     '#type' => 'markup',
     '#markup' => '<a class="button move-from-selected">' . t('Remove from Selected') . '</a>',
     '#weight' => 3,
   );
 
-  $element['drag_tables']['selected'] = array(
+  $element['selectboxes']['selected'] = array(
     '#title' => t('Selected'),
     '#type' => 'select',
     '#options' => $options,
@@ -97,10 +98,10 @@ function drag_tables_process($element, $form_state) {
     '#weight' => 4,
   );
 
-  $element['drag_tables']['value'] = array(
+  $element['selectboxes']['value'] = array(
     '#type' => 'hidden',
     '#value' => drupal_json_encode($selected),
-    '#attributes' => array('id' => 'drag-tables-value'),
+    '#attributes' => array('id' => 'selectboxes-value'),
   );
 
   $element['#value'] = array_keys($options);
@@ -109,12 +110,12 @@ function drag_tables_process($element, $form_state) {
 }
 
 /**
- * Element validate function for drag_tables.
+ * Element validate function for selectboxes.
  */
-function drag_tables_element_validate($element, &$form_state) {
+function selectboxes_element_validate($element, &$form_state) {
   $value = filter_xss($form_state['input'][$element['#name']][$element['#type']]['value']);
   $elements = drupal_json_decode($value);
-  if (drag_tables_validate_selected_elements($elements, $element)) {
+  if (selectboxes_validate_selected_elements($elements, $element)) {
     $values = &$form_state['values'];
     $values[$element['#name']][$element['#type']]['selected'] = $elements;
   }
@@ -123,6 +124,6 @@ function drag_tables_element_validate($element, &$form_state) {
 /**
  * Validate if all selected social networks are valid.
  */
-function drag_tables_validate_selected_elements($elements, $element) {
+function selectboxes_validate_selected_elements($elements, $element) {
   return empty(array_diff(array_keys($elements), array_keys($element['#options'])));
 }

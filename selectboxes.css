@@ -1,0 +1,18 @@
+.selectboxes-elements .form-item, .selectboxes-elements .form-actions {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.selectboxes-elements .form-actions {
+  margin-left: 15px;
+}
+
+.selectboxes-elements .form-select {
+  width: 150px;
+}
+
+.selectboxes-elements .form-actions a {
+  display: block;
+  clear: both;
+  width: 150px;
+}

@@ -3,9 +3,9 @@
  */
 
 (function () {
-  Drupal.behaviors.dragTables = {
+  Drupal.behaviors.selectBoxes = {
     attach: function (context, settings) {
-      var id = Drupal.settings.dragTables.id;
+      var id = Drupal.settings.selectBoxes.id;
       jQuery('#' + id + '-selected option:not(:selected)', context).once('hide-not-selected', function() {
         jQuery(this).addClass('element-hidden');
       });
@@ -42,7 +42,7 @@
           active.each(function() {
             values[jQuery(this).val()] = jQuery(this).val();
           });
-          jQuery('#drag-tables-value').val(JSON.stringify(values));
+          jQuery('#selectboxes-value').val(JSON.stringify(values));
         }
       });
     }

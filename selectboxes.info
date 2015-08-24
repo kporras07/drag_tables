@@ -1,0 +1,3 @@
+name = Select Boxes
+description = Add a FAPI Element for using 2 select boxes.
+core = 7.x
