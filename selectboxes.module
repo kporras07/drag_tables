@@ -27,7 +27,6 @@ function selectboxes_element_info() {
 function selectboxes_process($element, $form_state) {
   if (isset($element['#id']) && isset($element['#type'])) {
     $settings = array('id' => $element['#id'] . '-' . str_replace('_', '-', $element['#type']));
-    dpm($element, 'ELEMENT');
   }
   else {
     $settings = array();
